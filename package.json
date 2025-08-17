@@ -6,18 +6,57 @@
     "start": "expo start",
     "android": "expo start --android",
     "ios": "expo start --ios",
-    "web": "expo start --web"
+    "web": "expo start --web",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
+    "test:ci": "jest --ci --coverage --watchAll=false",
+    "test:individual": "./run_tests_separately.sh",
+    "test:ci-safe": "jest --ci --runInBand --maxWorkers=1 --testTimeout=30000 --detectOpenHandles --forceExit",
+    "test:single": "jest --testNamePattern",
+    "test:file": "jest --testPathPattern"
   },
   "dependencies": {
     "expo": "~53.0.20",
+    "expo-linear-gradient": "~14.1.5",
     "expo-status-bar": "~2.2.3",
     "react": "19.0.0",
     "react-native": "0.79.5",
-    "react-native-svg": "15.11.2",
-    "expo-linear-gradient": "~14.1.5"
+    "react-native-svg": "15.11.2"
   },
   "devDependencies": {
-    "@babel/core": "^7.20.0"
+    "@babel/core": "^7.20.0",
+    "@testing-library/jest-native": "^5.4.3",
+    "@testing-library/react-native": "^13.2.2",
+    "jest": "^30.0.5",
+    "jest-expo": "^53.0.9",
+    "react-test-renderer": "^19.0.0"
+  },
+  "jest": {
+    "preset": "jest-expo",
+    "setupFilesAfterEnv": ["<rootDir>/jest-setup.js"],
+    "collectCoverageFrom": [
+      "components/**/*.{js,jsx}",
+      "utils/**/*.{js,jsx}",
+      "!**/node_modules/**",
+      "!**/coverage/**"
+    ],
+    "coverageThreshold": {
+      "global": {
+        "branches": 60,
+        "functions": 60,
+        "lines": 60,
+        "statements": 60
+      }
+    },
+    "transformIgnorePatterns": [
+      "node_modules/(?!(jest-)?react-native|@react-native|expo|@expo|@unimodules|react-clone-referenced-element|@react-native-community|expo-linear-gradient|react-native-svg)"
+    ],
+    "testPathIgnorePatterns": [
+      "/node_modules/",
+      "/android/",
+      "/ios/"
+    ]
   },
   "private": true
 }

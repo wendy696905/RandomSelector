@@ -31,7 +31,7 @@ export const SetupForm = ({ onStartSpinner, onBack, existingGameData }) => {
     const hasMultipleWords = text.includes(',') || 
                             text.includes(';') || 
                             text.includes('|') ||
-                            text.trim().split(/\s+/).length > 3;
+                            text.trim().split(/\s+/).length > 10;
 
     if (hasMultipleWords) {
       Alert.alert(
