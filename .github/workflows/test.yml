@@ -1,0 +1,72 @@
+name: Jest Tests
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    
+    strategy:
+      # Run tests individually to prevent parallel execution issues
+      matrix:
+        test-file: [
+          "__tests__/simple.test.js",
+          "__tests__/utils/RandomGenerator.test.js", 
+          "__tests__/Header.test.js",
+          "__tests__/ResultModal.test.js",
+          "__tests__/accessibility.test.js",
+          "__tests__/edgecase.test.js",
+          "__tests__/SetupForm.test.js",
+          "__tests__/SpinnerScreen.simple.test.js",
+          "__tests__/SpinnerScreen.integration.test.js",
+          "__tests__/App.integration.test.js"
+        ]
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+        
+    - name: Install dependencies
+      run: npm ci
+      
+    - name: Clear Jest cache
+      run: npx jest --clearCache
+      
+    - name: Run individual test
+      run: |
+        npx jest "${{ matrix.test-file }}" \
+          --verbose \
+          --detectOpenHandles \
+          --forceExit \
+          --maxWorkers=1 \
+          --testTimeout=30000 \
+          --no-cache \
+          --runInBand
+      env:
+        CI: true
+
+  # Summary job that depends on all matrix jobs
+  test-summary:
+    runs-on: ubuntu-latest
+    needs: test
+    if: always()
+    
+    steps:
+    - name: Check test results
+      run: |
+        if [ "${{ needs.test.result }}" = "success" ]; then
+          echo "🎉 All tests passed!"
+        else
+          echo "💥 Some tests failed!"
+          exit 1
+        fi
