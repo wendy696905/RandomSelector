@@ -50,8 +50,7 @@ jobs:
           --forceExit \
           --maxWorkers=1 \
           --testTimeout=30000 \
-          --no-cache \
-          --runInBand
+          --no-cache
       env:
         CI: true
 
